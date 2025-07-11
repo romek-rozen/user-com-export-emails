@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>User.com - Export Users</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>User.com - Export Users</h1>
+        
+        <form id="exportForm">
+            <div class="form-group">
+                <label for="appSubdomain">APP_SUBDOMAIN:</label>
+                <input type="text" id="appSubdomain" name="appSubdomain" placeholder="e.g. your-company or your-company.user.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="token">TOKEN:</label>
+                <input type="password" id="token" name="token" placeholder="Your 64-character API key" required>
+            </div>
+            
+            <div class="fields-section">
+                <label>Select fields to export:</label>
+                <div class="fields-grid">
+                    <div class="field-checkbox">
+                        <input type="checkbox" id="email" name="fields" value="email" checked>
+                        <label for="email">Email</label>
+                    </div>
+                    <div class="field-checkbox">
+                        <input type="checkbox" id="name" name="fields" value="name" checked>
+                        <label for="name">Full name</label>
+                    </div>
+                    <div class="field-checkbox">
+                        <input type="checkbox" id="id" name="fields" value="id">
+                        <label for="id">ID</label>
+                    </div>
+                    <div class="field-checkbox">
+                        <input type="checkbox" id="key" name="fields" value="key">
+                        <label for="key">Key</label>
+                    </div>
+                    <div class="field-checkbox">
+                        <input type="checkbox" id="created_at" name="fields" value="created_at" checked>
+                        <label for="created_at">Created date</label>
+                    </div>
+                    <div class="field-checkbox">
+                        <input type="checkbox" id="updated_at" name="fields" value="updated_at">
+                        <label for="updated_at">Updated date</label>
+                    </div>
+                    <div class="field-checkbox">
+                        <input type="checkbox" id="status" name="fields" value="status" checked>
+                        <label for="status">Status</label>
+                    </div>
+                    <div class="field-checkbox">
+                        <input type="checkbox" id="unsubscribed" name="fields" value="unsubscribed">
+                        <label for="unsubscribed">Unsubscribed</label>
+                    </div>
+                    <div class="field-checkbox">
+                        <input type="checkbox" id="phone_number" name="fields" value="phone_number">
+                        <label for="phone_number">Phone number</label>
+                    </div>
+                    <div class="field-checkbox">
+                        <input type="checkbox" id="country" name="fields" value="country">
+                        <label for="country">Country</label>
+                    </div>
+                    <div class="field-checkbox">
+                        <input type="checkbox" id="city" name="fields" value="city">
+                        <label for="city">City</label>
+                    </div>
+                    <div class="field-checkbox">
+                        <input type="checkbox" id="gender" name="fields" value="gender">
+                        <label for="gender">Gender</label>
+                    </div>
+                    <div class="field-checkbox">
+                        <input type="checkbox" id="score" name="fields" value="score">
+                        <label for="score">Score</label>
+                    </div>
+                    <div class="field-checkbox">
+                        <input type="checkbox" id="page_views" name="fields" value="page_views">
+                        <label for="page_views">Page views</label>
+                    </div>
+                    <div class="field-checkbox">
+                        <input type="checkbox" id="first_seen" name="fields" value="first_seen">
+                        <label for="first_seen">First seen</label>
+                    </div>
+                    <div class="field-checkbox">
+                        <input type="checkbox" id="last_seen" name="fields" value="last_seen">
+                        <label for="last_seen">Last seen</label>
+                    </div>
+                    <div class="field-checkbox">
+                        <input type="checkbox" id="last_contacted" name="fields" value="last_contacted">
+                        <label for="last_contacted">Last contacted</label>
+                    </div>
+                    <div class="field-checkbox">
+                        <input type="checkbox" id="tags" name="fields" value="tags">
+                        <label for="tags">Tags</label>
+                    </div>
+                    <div class="field-checkbox">
+                        <input type="checkbox" id="attributes" name="fields" value="attributes">
+                        <label for="attributes">Attributes</label>
+                    </div>
+                    <div class="field-checkbox">
+                        <input type="checkbox" id="companies" name="fields" value="companies">
+                        <label for="companies">Companies</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="buttons">
+                <button type="button" id="selectAll" class="btn-secondary">Select all</button>
+                <button type="button" id="selectNone" class="btn-secondary">Select none</button>
+                <button type="button" id="viewUsers" class="btn-success">Show users</button>
+                <button type="submit" class="btn-primary">Export to CSV</button>
+            </div>
+        </form>
+        
+        <div class="progress" id="progress">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div id="progressText"></div>
+        </div>
+        
+        <div class="status" id="status"></div>
+        
+        <div class="users-table" id="usersTable">
+            <h2>User list</h2>
+            <div class="table-container">
+                <table id="userTableElement">
+                    <thead id="tableHead"></thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+            <div class="pagination" id="pagination"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

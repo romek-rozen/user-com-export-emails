@@ -1,0 +1,24 @@
+# Pliki specyficzne dla projektu
+task.md
+tree.txt
+.env
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Pliki systemowe
+.DS_Store
+Thumbs.db
+
+# Logi i pliki tymczasowe
+*.log
+*.tmp
+.nyc_output
+coverage/
+
+# IDE
+.vscode/settings.json
+.vscode/launch.json

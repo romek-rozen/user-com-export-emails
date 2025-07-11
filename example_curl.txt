@@ -1,0 +1,126 @@
+# Request
+curl -X GET -H "Authorization: Token <your_64_char_api_key>"
+-H "Accept: */*; version=2"
+"https://<your_app_subdomain>.user.com/api/public/users/"
+
+# Filtering
+
+GET /users/?search=:type&min=:timestamp&max=:timestamp
+Attributes 	Type 	Required 	Description
+search 	fixed 	yes 	An attribute through which you can search. 4 types to choose from: first_seen, last_seen, last_contacted, updated_at (UNIX format)
+min 	timestamp 	no 	A start date of search in UNIX format.
+max 	timestamp 	no 	An end date of search in UNIX format.
+with_email 	boolean 	no 	If value is set up to true results includes only users with emails.
+tags 	string 	no 	A tag name.
+
+The lookup value has to be in ISO-8601 format.
+Lookup 	Description 	Example usage
+__lt 	Lesser than 	?first_seen__lt=2019-05-16+00:00
+__lte 	Lesser than or equal 	?first_seen__lte=2019-05-16+00:00
+__gt 	Greater than 	?first_seen__gt=2019-05-16+00:00
+__gte 	Greater than or equal 	?first_seen__gte=2019-05-16+00:00
+
+
+Example only with e-mails: 
+
+
+
+curl -X GET -H "Authorization: Token <your_64_char_api_key>"
+-H "Accept: */*; version=2" 
+-H "Accept: */*; version=2" -H "Content-Type: application/json" "https://<your_app_subdomain>.user.com/api/public/users/?with_email=true
+
+# Response
+
+{
+  "count": 123,
+  "results": [
+    {
+      "email": "example@email.com",
+      "last_ip": null,
+      "lists": [],
+      "google_url": null,
+      "created_at": "2017-05-29T10:08:59.526286Z",
+      "first_seen": null,
+      "last_seen": null,
+      "attributes": [
+        {
+          "name": "Awesome attribute",
+          "id": 2092,
+          "name_std": "awesome_attribute",
+          "value": "Value for the attribute"
+        }
+      ],
+      "region": null,
+      "last_contacted": null,
+      "notifications": true,
+      "page_views": 0,
+      "country": null,
+      "gender": "unknown",
+      "timezone": null,
+      "os_type": null,
+      "unsubscribed": true,
+      "gravatar_url": null,
+      "key": "rQ8mdQ8W6I5t",
+      "id": 18260675,
+      "phone_number": null,
+      "chat_id": "Chat ID is deprecated and will be removed in future",
+      "facebook_url": null,
+      "city": null,
+      "status": "visitor",
+      "browser_language": null,
+      "twitter_url": null,
+      "linkedin_url": null,
+      "browser": null,
+      "score": 0,
+      "name": "John Doe",
+      "tags": [],
+      "resolution": null,
+      "updated_at": "2017-05-29T10:08:59.526309Z"
+      },
+      "companies": [
+      {
+      "id": 14,
+      "name": "Company name",
+      "member_since": "2018-06-14T08:49:56.515083Z"
+      }
+    ],
+    {
+      "email": "example@email.org",
+      "last_ip": null,
+      "lists": [],
+      "google_url": null,
+      "created_at": "2017-06-13T12:22:38.748373Z",
+      "first_seen": null,
+      "last_seen": null,
+      "attributes": [],
+      "region": null,
+      "last_contacted": null,
+      "notifications": true,
+      "page_views": 0,
+      "country": null,
+      "gender": "unknown",
+      "timezone": null,
+      "os_type": null,
+      "unsubscribed": false,
+      "gravatar_url": null,
+      "key": "xSoYQG00fg9z",
+      "id": 20901703,
+      "phone_number": null,
+      "chat_id": "Chat ID is deprecated and will be removed in future",
+      "facebook_url": null,
+      "city": null,
+      "status": "visitor",
+      "browser_language": null,
+      "twitter_url": null,
+      "linkedin_url": null,
+      "browser": null,
+      "score": 0,
+      "name": "Jane Doe",
+      "tags": [],
+      "resolution": null,
+      "updated_at": "2017-06-13T12:51:30.924647Z"
+    }
+  ],
+  "next": null,
+  "previous": null
+}
