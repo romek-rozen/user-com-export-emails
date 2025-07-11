@@ -29,13 +29,13 @@ npm install
 npm start
 ```
 
-2. Open browser and go to: http://localhost:3000
+2. Open browser and go to: `localhost:3000`
 
 **IMPORTANT:** The application must be run through Node.js server (`npm start`), you cannot open the `index.html` file directly due to CORS issues.
 
 ## Usage
 
-1. Open http://localhost:3000 in browser
+1. Open `localhost:3000` in browser
 2. Enter your User.com subdomain (e.g. `your-company` or `your-company.user.com`)
 3. Enter your 64-character API TOKEN
 4. Select fields to export/display
