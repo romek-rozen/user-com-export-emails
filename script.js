@@ -20,131 +20,59 @@ function initializeEventListeners() {
         checkboxes.forEach(checkbox => checkbox.checked = false);
     });
 
-    document.getElementById('viewUsers').addEventListener('click', async function() {
-        const appSubdomain = document.getElementById('appSubdomain').value.trim();
-        const token = document.getElementById('token').value.trim();
-        selectedFields = Array.from(document.querySelectorAll('input[name="fields"]:checked'))
-            .map(checkbox => checkbox.value);
-        
-        if (!appSubdomain || !token) {
-            showStatus('Please fill in all fields', 'error');
-            return;
-        }
-        
-        if (selectedFields.length === 0) {
-            showStatus('Please select at least one field to display', 'error');
-            return;
-        }
-        
-        const subdomain = appSubdomain.replace(/^https?:\/\//, '').replace(/\.user\.com.*$/, '');
-        
-        try {
-            await fetchAllUsersForDisplay(subdomain, token);
-        } catch (error) {
-            console.error('Error fetching users:', error);
-            showStatus('Error fetching users: ' + error.message, 'error');
-            hideProgress();
-        }
+    document.getElementById('viewUsers').addEventListener('click', function() {
+        handleUserAction('display');
     });
 
-    document.getElementById('exportForm').addEventListener('submit', async function(e) {
+    document.getElementById('exportForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        
-        const appSubdomain = document.getElementById('appSubdomain').value.trim();
-        const token = document.getElementById('token').value.trim();
-        const selectedFields = Array.from(document.querySelectorAll('input[name="fields"]:checked'))
-            .map(checkbox => checkbox.value);
-        
-        if (!appSubdomain || !token) {
-            showStatus('Please fill in all fields', 'error');
-            return;
-        }
-        
-        if (selectedFields.length === 0) {
-            showStatus('Please select at least one field to export', 'error');
-            return;
-        }
-        
-        const subdomain = appSubdomain.replace(/^https?:\/\//, '').replace(/\.user\.com.*$/, '');
-        
-        try {
-            await fetchAllUsers(subdomain, token, selectedFields);
-        } catch (error) {
-            showStatus('Error fetching users: ' + error.message, 'error');
-            hideProgress();
-        }
+        handleUserAction('export');
+    });
+
+    document.getElementById('testUsers').addEventListener('click', function() {
+        handleUserAction('test');
     });
 }
 
-async function fetchAllUsers(subdomain, token, selectedFields) {
-    showProgress();
-    showStatus('Fetching users...', 'info');
-    
-    allUsers = [];
-    fetchedUsers = 0;
-    totalUsers = 0;
-    
-    let cursor = null;
-    let hasMore = true;
-    
-    while (hasMore) {
-        try {
-            const params = new URLSearchParams({
-                subdomain: subdomain,
-                token: token,
-                with_email: 'true'
-            });
-            
-            if (cursor) {
-                params.append('cursor', cursor);
-            }
-            
-            const response = await fetch(`/api/users?${params}`);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-            
-            const data = await response.json();
-            
-            if (totalUsers === 0) {
-                totalUsers = data.count;
-            }
-            
-            allUsers = allUsers.concat(data.results);
-            fetchedUsers = allUsers.length;
-            
-            updateProgress(fetchedUsers, totalUsers);
-            
-            // Extract cursor from next URL if it exists
-            if (data.next) {
-                const nextUrl = new URL(data.next);
-                cursor = nextUrl.searchParams.get('cursor');
-                hasMore = true;
-            } else {
-                hasMore = false;
-            }
-            
-            if (hasMore) {
-                await new Promise(resolve => setTimeout(resolve, 100));
-            }
-            
-        } catch (error) {
-            throw new Error(`API Error: ${error.message}`);
-        }
+async function handleUserAction(action) {
+    const appSubdomain = document.getElementById('appSubdomain').value.trim();
+    const token = document.getElementById('token').value.trim();
+    selectedFields = Array.from(document.querySelectorAll('input[name="fields"]:checked'))
+        .map(checkbox => checkbox.value);
+
+    if (!appSubdomain || !token) {
+        showStatus('Please fill in all fields', 'error');
+        return;
     }
-    
-    hideProgress();
-    generateCSV(allUsers, selectedFields);
+
+    if (selectedFields.length === 0) {
+        showStatus(`Please select at least one field to ${action}`, 'error');
+        return;
+    }
+
+    const subdomain = appSubdomain.replace(/^https?:\/\//, '').replace(/\.user\.com.*$/, '');
+
+    try {
+        if (action === 'export' && allUsers.length > 0) {
+            showStatus('Using cached users for export.', 'info');
+            generateCSV(allUsers, selectedFields);
+        } else {
+            // Reset users only when initiating a new fetch
+            allUsers = [];
+            fetchedUsers = 0;
+            totalUsers = 0;
+            await fetchAndProcessUsers(subdomain, token, action);
+        }
+    } catch (error) {
+        console.error(`Error during ${action}:`, error);
+        showStatus(`Error during ${action}: ` + error.message, 'error');
+        hideProgress();
+    }
 }
 
-async function fetchAllUsersForDisplay(subdomain, token) {
+async function fetchAndProcessUsers(subdomain, token, action) {
     showProgress();
     showStatus('Fetching users...', 'info');
-    
-    allUsers = [];
-    fetchedUsers = 0;
-    totalUsers = 0;
     
     let cursor = null;
     let hasMore = true;
@@ -156,6 +84,10 @@ async function fetchAllUsersForDisplay(subdomain, token) {
                 token: token,
                 with_email: 'true'
             });
+
+            if (action === 'test') {
+                params.append('users_per_page', 10);
+            }
             
             if (cursor) {
                 params.append('cursor', cursor);
@@ -179,7 +111,7 @@ async function fetchAllUsersForDisplay(subdomain, token) {
             updateProgress(fetchedUsers, totalUsers);
             
             // Extract cursor from next URL if it exists
-            if (data.next) {
+            if (data.next && action !== 'test') {
                 const nextUrl = new URL(data.next);
                 cursor = nextUrl.searchParams.get('cursor');
                 hasMore = true;
@@ -197,8 +129,13 @@ async function fetchAllUsersForDisplay(subdomain, token) {
     }
     
     hideProgress();
-    showStatus(`Fetched ${allUsers.length} users`, 'success');
-    displayUsersTable();
+
+    if (action === 'display' || action === 'test') {
+        showStatus(`Fetched ${allUsers.length} users`, 'success');
+        displayUsersTable();
+    } else if (action === 'export') {
+        generateCSV(allUsers, selectedFields);
+    }
 }
 
 function displayUsersTable() {

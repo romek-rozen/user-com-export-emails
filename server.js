@@ -63,5 +63,5 @@ app.get('/', (req, res) => {
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
-    console.log('Open your browser and go to: http://localhost:3000');
+    console.log(`Open your browser and go to: http://localhost:${PORT}`);
 });
